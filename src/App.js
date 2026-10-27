@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 
 function App() {
   const [contador, setContador] = useState(0)
+  const [pessoa, setPessoa] = useState({})
   let texto = "Vai Curintia"
   let resultado = ()=>{
     let sum=0
@@ -15,8 +16,31 @@ function App() {
     return sum
   }
 
+  let montarTagPessoa = () => {
+    let tag = <div>
+                <label>Nome:</label> 
+                <p>{pessoa?.name?.title}. {pessoa?.name?.first} {pessoa?.name?.last}</p>
+              </div>
+
+    return tag
+  }
+
+  //rodar uma vez
   useEffect(()=>{
-    setContador(contador+1)
+    
+    let query = fetch("https://randomuser.me/api/")
+    
+    query.then((response)=>{
+      if(response.ok){
+        return response.json()      
+      } else {
+        throw new Error("Oooops!");
+      }
+    }).then((data)=>{
+        console.log('data: ', data.results[0])  
+        setPessoa(data.results[0])
+      })
+    
   },[])
 
   return (
@@ -31,6 +55,10 @@ function App() {
         {contador}
         <button onClick={()=>{setContador(contador+1); console.log(contador)}}>+</button>
       </div>
+
+
+      <h2>Pessoas</h2>
+      {montarTagPessoa()}
 
       <Footer></Footer>
     </div>
